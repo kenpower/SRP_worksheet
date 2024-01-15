@@ -12,11 +12,6 @@
 
 class Game
 {
-	// private data members
-
-	// put your game objects here eg player object and 
-	// array of enemy objects etc.
-
 	sf::RenderWindow window;
 	Player p;
 

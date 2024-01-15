@@ -22,7 +22,7 @@
     <ProjectGuid>{3825B126-CF51-437C-B642-66A08D71B47A}</ProjectGuid>
     <RootNamespace>JointProject1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>SRP</ProjectName>
+    <ProjectName>SRP-PlayerClass</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

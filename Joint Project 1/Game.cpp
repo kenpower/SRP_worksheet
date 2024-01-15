@@ -62,7 +62,7 @@ void Game::loadContent()
 	m_message.setFillColor(sf::Color::White); // set the text colour
 	m_message.setPosition(10, 10);  // its position on the screen
 
-	p.loadAssets();
+	p.loadAssets("ASSETS\\face.png");
 
 }
 
@@ -113,16 +113,6 @@ void Game::run()
 void Game::update()
 // This function takes the keyboard input and updates the game world
 {
-	// get keyboard input
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-	}
-
-	// update any game variables here ...
-
 	p.update();
 
 }
@@ -133,9 +123,10 @@ void Game::draw()
 	// Clear the screen and draw your game sprites
 	window.clear();
 
-	m_message.setString("Game Play");
+	m_message.setString("Use cursor keys to move");
 	window.draw(m_message);  // write message to the screen
 
-	p.render();
+	p.render(window);
+	
 	window.display();
 }

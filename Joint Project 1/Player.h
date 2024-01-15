@@ -1,21 +1,23 @@
 // Player class declaration
 #pragma once
+#include<string>
+
 
 class Player
 {
-	// private data members
 	int x, y;
-	int dx, dy;
+	int velX, velY;
+
+	sf::Texture m_texture;  
+	sf::Sprite m_sprite;    
 
 public:
 	Player() {
 		x = 100, y = 100;
-		dx = dy = 0;
+		velX = velY = 0;
 
 	}
-	void loadAssets();
+	void loadAssets(std::string);
 	void update();
-	void render();
-
-
+	void render(sf::RenderWindow&);
 };
