@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <iomanip>
 #include <list>
@@ -16,6 +17,7 @@ struct Transaction {
 };
 
 class BankAccount {
+    string id;
     list<Transaction> transactions;
     float balance = 0;
     float withdrawLimit = -500;
@@ -27,9 +29,11 @@ class BankAccount {
         transactions.push_back(t);
     }
 public:
+    BankAccount(const string accountNumber) :id(accountNumber) {}
+
     void withdraw(float amount, string desc) {
         if (balance - amount < withdrawLimit) {
-            cout << "Error: transaction not processed, withdraw limit breached:" << desc << amount << "\n";
+            cout << "Error: transaction not processed, withdraw limit breached: " << desc << ":" << amount << "\n";
             return;
         }
         processTransaction(desc, -amount);
@@ -50,8 +54,12 @@ public:
 
         int descipColWidth = 30;
         int amountColWidth = 12;
-        cout << "Bank Account Statement\n";
-        cout << "======================\n";
+        cout << setfill('=');
+        cout << setw(49) << "\n";
+        cout << "Bank Account Statement for a/c number: " << id << "\n";
+        cout << setw(49) << "\n";
+
+        cout << setfill(' ');
 
         cout << left << setw(descipColWidth) << ""
             << right << setw(amountColWidth) << "Credit" << right << setw(amountColWidth) << "Debit" << setw(amountColWidth) << "Balance" << "\n";
@@ -77,11 +85,60 @@ public:
         }
 
     }
+
+    void printStatementToHTML(const std::string& filepath) {
+        std::ofstream htmlFile(filepath);
+
+
+        htmlFile << "<!DOCTYPE html>\n<html>\n<head>\n";
+        htmlFile << "<title>Bank Account Statement</title>\n";
+        htmlFile << "<style>\n";
+        htmlFile << "table { width: 100%; border-collapse: collapse; }\n";
+        htmlFile << "th, td { border: 1px solid black; padding: 8px; }\n";
+        htmlFile << "th { background-color: #f2f2f2; }\n";
+        htmlFile << "</style>\n";
+        htmlFile << "</head>\n<body>\n";
+
+        htmlFile << "<h2>Bank Account Statement for a/c number: " << id << "</h2>\n";
+
+        htmlFile << "<table>\n";
+        htmlFile << "<tr>\n";
+        htmlFile << "<th>Description</th><th>Credit</th><th>Debit</th><th>Balance</th>\n";
+        htmlFile << "</tr>\n";
+
+        // Transactions
+        for (const auto& t : transactions) {
+            std::ostringstream amountStream;
+            amountStream << std::fixed << std::setprecision(2) << fabs(t.amount);
+            htmlFile << "<tr>\n";
+            htmlFile << "<td>" << t.description << "</td>";
+            if (t.amount < 0) {
+                htmlFile << "<td></td>"; // Empty cell for credit
+                htmlFile << "<td>" << amountStream.str() << "€</td>"; // Debit amount
+            }
+            else {
+                htmlFile << "<td>" << amountStream.str() << "€</td>"; // Credit amount
+                htmlFile << "<td></td>"; // Empty cell for debit
+            }
+            htmlFile << "<td>" << std::fixed << std::setprecision(2) << t.balanceAfter << "€</td>\n";
+            htmlFile << "</tr>\n";
+        }
+
+        // Close table
+        htmlFile << "</table>\n";
+
+        // End HTML document
+        htmlFile << "</body>\n</html>";
+
+        // Close file
+        htmlFile.close();
+    }
+
 };
 
 int main()
 {
-    BankAccount ac;
+    BankAccount ac("124687935");
 
     ac.lodgment(1000, "Salary");
     ac.chargeInterest();
@@ -100,6 +157,5 @@ int main()
 
 
     ac.printStatement();
-
-
+    ac.printStatementToHTML("statment.html");
 }
