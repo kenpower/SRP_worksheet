@@ -157,5 +157,7 @@ int main()
 
 
     ac.printStatement();
+
+    std::cout << "\n\n\n" << "Web version of statment output to file `statment.html`" << "\n\n\n\n\n";
     ac.printStatementToHTML("statment.html");
 }
