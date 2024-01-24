@@ -43,3 +43,7 @@ to the Player class in order to facilitate this. **For this exercise, put the ne
 You will also need to pass the Player object to other functions or classes (in the constructor), depending on how you implement the solution.
 
 Check that the code still works, commit and push.
+
+## Submit to blackboard
+
+Upload the two files (SRP-BankAccount.cpp && Player.ccp) to the SRP blackboard assignment
