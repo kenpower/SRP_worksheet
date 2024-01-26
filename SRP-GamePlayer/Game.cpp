@@ -62,7 +62,8 @@ void Game::loadContent()
 	m_message.setFillColor(sf::Color::White); // set the text colour
 	m_message.setPosition(10, 10);  // its position on the screen
 
-	p.loadAssets("ASSETS\\face.png", sf::IntRect(4 * 146, 0 * 187, 146, 187));
+	//p.loadAssets("ASSETS\\face.png", sf::IntRect(4 * 146, 0 * 187, 146, 187));
+	playerRender.loadAssets("ASSETS\\face.png", sf::IntRect(4 * 146, 0 * 187, 146, 187));
 
 }
 
@@ -113,7 +114,8 @@ void Game::run()
 void Game::update()
 // This function takes the keyboard input and updates the game world
 {
-	p.update();
+	//p.update();
+	p.update(ui);
 
 }
 
@@ -126,7 +128,8 @@ void Game::draw()
 	m_message.setString("Use cursor keys to move");
 	window.draw(m_message);  // write message to the screen
 
-	p.render(window);
+	// p.render(window);
+	playerRender.render(window, p.posX(), p.posY());
 	
 	window.display();
 }

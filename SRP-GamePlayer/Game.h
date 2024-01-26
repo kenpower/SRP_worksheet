@@ -14,6 +14,8 @@ class Game
 {
 	sf::RenderWindow window;
 	Player p;
+	ImageRenderer playerRender;
+	UserInput ui;
 
 public:
 	sf::Font m_font;  // font for writing text

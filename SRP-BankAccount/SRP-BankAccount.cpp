@@ -16,6 +16,11 @@ struct Transaction {
     float balanceAfter;
 };
 
+struct StatementDTO { //DTO = DataTransferObject
+	string id;
+	list<Transaction>& transactions;
+};
+
 class BankAccount {
     string id;
     list<Transaction> transactions;
@@ -50,43 +55,53 @@ public:
         }
     }
 
-    void printStatement() {
+    StatementDTO statementInformation() {
+		return StatementDTO{ id, transactions };
+	}
+};
 
-        int descipColWidth = 30;
-        int amountColWidth = 12;
-        cout << setfill('=');
-        cout << setw(49) << "\n";
-        cout << "Bank Account Statement for a/c number: " << id << "\n";
-        cout << setw(49) << "\n";
+class ConsoleStatmentPrinter {
+    public:
+        void print(StatementDTO account) {
 
-        cout << setfill(' ');
+            int descipColWidth = 30;
+            int amountColWidth = 12;
+            cout << setfill('=');
+            cout << setw(49) << "\n";
+            cout << "Bank Account Statement for a/c number: " << account.id << "\n";
+            cout << setw(49) << "\n";
 
-        cout << left << setw(descipColWidth) << ""
-            << right << setw(amountColWidth) << "Credit" << right << setw(amountColWidth) << "Debit" << setw(amountColWidth) << "Balance" << "\n";
-        cout << left << setw(descipColWidth) << ""
-            << right << setw(amountColWidth) << "------" << right << setw(amountColWidth) << "-----" << setw(amountColWidth) << "-------" << "\n";
+            cout << setfill(' ');
+
+            cout << left << setw(descipColWidth) << ""
+                << right << setw(amountColWidth) << "Credit" << right << setw(amountColWidth) << "Debit" << setw(amountColWidth) << "Balance" << "\n";
+            cout << left << setw(descipColWidth) << ""
+                << right << setw(amountColWidth) << "------" << right << setw(amountColWidth) << "-----" << setw(amountColWidth) << "-------" << "\n";
 
 
-        for (auto& t : transactions) {
-            // setw(30) sets the width of the description column to 30 characters, 
-            // setfill to ensure that the extra space is filled with periods on the right side of the description text.
-            // and setw(8) sets the width of the amount column to 8 characters, 
-            // including the space for the euro sign and decimal places. 
-            // The fixed and setprecision(2) ensure that
-            // the amount is always displayed with two decimal places
+            for (auto& t : account.transactions) {
+                // setw(30) sets the width of the description column to 30 characters, 
+                // setfill to ensure that the extra space is filled with periods on the right side of the description text.
+                // and setw(8) sets the width of the amount column to 8 characters, 
+                // including the space for the euro sign and decimal places. 
+                // The fixed and setprecision(2) ensure that
+                // the amount is always displayed with two decimal places
 
-            ostringstream amount;
-            amount << std::fixed << std::setprecision(2) << t.amount;
-       
-            cout << left << setfill('.') << setw(descipColWidth)<< t.description << setfill(' ')
-                << right << setw(amountColWidth)  << (t.amount < 0 ? amount.str() : "")
-                << right << setw(amountColWidth)  << (t.amount >= 0 ? amount.str() : "")
-                << right << setw(amountColWidth) << fixed << setprecision(2) << t.balanceAfter << "\n";
+                ostringstream amount;
+                amount << std::fixed << std::setprecision(2) << t.amount;
+
+                cout << left << setfill('.') << setw(descipColWidth) << t.description << setfill(' ')
+                    << right << setw(amountColWidth) << (t.amount < 0 ? amount.str() : "")
+                    << right << setw(amountColWidth) << (t.amount >= 0 ? amount.str() : "")
+                    << right << setw(amountColWidth) << fixed << setprecision(2) << t.balanceAfter << "\n";
+            }
+
         }
+ };
 
-    }
-
-    void printStatementToHTML(const std::string& filepath) {
+class HTMLStatmentPrinter {
+    public:
+    void print(const std::string& filepath, StatementDTO account) {
         std::ofstream htmlFile(filepath);
 
 
@@ -99,7 +114,7 @@ public:
         htmlFile << "</style>\n";
         htmlFile << "</head>\n<body>\n";
 
-        htmlFile << "<h2>Bank Account Statement for a/c number: " << id << "</h2>\n";
+        htmlFile << "<h2>Bank Account Statement for a/c number: " << account.id << "</h2>\n";
 
         htmlFile << "<table>\n";
         htmlFile << "<tr>\n";
@@ -107,7 +122,7 @@ public:
         htmlFile << "</tr>\n";
 
         // Transactions
-        for (const auto& t : transactions) {
+        for (const auto& t : account.transactions) {
             std::ostringstream amountStream;
             amountStream << std::fixed << std::setprecision(2) << fabs(t.amount);
             htmlFile << "<tr>\n";
@@ -155,9 +170,16 @@ int main()
     ac.chargeInterest();
     ac.lodgment(1000, "Salary");
 
+    // Original Code
+    //ac.printStatement();
 
-    ac.printStatement();
+    //std::cout << "\n\n\n" << "Web version of statment output to file `statment.html`" << "\n\n\n\n\n";
+    //ac.printStatementToHTML("statment.html");
+
+    ConsoleStatmentPrinter consolePrinter;
+    consolePrinter.print(ac.statementInformation());
 
     std::cout << "\n\n\n" << "Web version of statment output to file `statment.html`" << "\n\n\n\n\n";
-    ac.printStatementToHTML("statment.html");
+    HTMLStatmentPrinter htmlPrinter;
+    htmlPrinter.print("statment.html", ac.statementInformation());
 }
